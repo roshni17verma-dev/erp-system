@@ -330,6 +330,36 @@ function Quotations({ user, setSuccessMessage }) {
     }
   }
 
+  const updateQuotationStatus = async (quotationId, status) => {
+  setPageError('')
+  setUpdatingStatus(quotationId)
+
+  try {
+    const response = await api.patch(
+      `/quotations/${quotationId}/status`,
+      { status },
+    )
+
+    setSuccessMessage(
+      response?.data?.message ||
+        `Quotation ${status.toLowerCase()} successfully.`,
+    )
+
+    await loadData(true)
+  } catch (error) {
+    console.error('Quotation status update error:', error)
+
+    setPageError(
+      getErrorMessage(
+        error,
+        'Unable to update quotation status.',
+      ),
+    )
+  } finally {
+    setUpdatingStatus(null)
+  }
+}
+
   const convertToSalesOrder = async (quotationId) => {
   setPageError('')
   setUpdatingStatus(quotationId)
